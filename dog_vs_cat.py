@@ -61,7 +61,7 @@ history = model.fit_generator(
     shuffle=True,
     validation_steps=50
 )
-
+print("job done")
 model.save('cats_and_dog_small3.h5')
 
 acc = history.history['acc']
