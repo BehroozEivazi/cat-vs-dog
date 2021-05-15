@@ -1,4 +1,4 @@
-from keras.applications import VGG16
+from keras.applications import MobileNetV2
 from keras import layers, models, optimizers
 from keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
@@ -8,7 +8,7 @@ from keras.models import Sequential
 import os
 import numpy as np
 
-conv_base = VGG16(weights='imagenet',
+conv_base = MobileNetV2(weights='imagenet',
                   include_top=False,
                   input_shape=(150, 150, 3)
                   )
@@ -22,9 +22,8 @@ validation_dir = os.path.join(base_dir, 'validation')
 datagen = ImageDataGenerator(rescale=1. / 255)
 batch_size = 20
 
-
 def extract_features(directory, sample_count):
-    features = np.zeros(shape=(sample_count, 4, 4, 512))
+    features = np.zeros(shape=(sample_count, 5 , 5, 1280))
     labels = np.zeros(shape=(sample_count))
     generator = datagen.flow_from_directory(
         directory=directory,
@@ -47,12 +46,12 @@ train_features, train_labels = extract_features(train_dir, 2000)
 validation_features, validation_labels = extract_features(validation_dir, 1000)
 test_features, test_labels = extract_features(test_dir, 1000)
 
-train_features = np.reshape(train_features, (2000, 4 * 4 * 512))
-validation_features = np.reshape(validation_features, (1000, 4 * 4 * 512))
-test_features = np.reshape(test_features, (1000, 4 * 4 * 512))
+train_features = np.reshape(train_features, (2000, 5 * 5* 1280))
+validation_features = np.reshape(validation_features, (1000,5 * 5* 1280))
+test_features = np.reshape(test_features, (1000, 5 * 5* 1280))
 
 model = Sequential()
-model.add(layers.Dense(256, activation='relu', input_dim=4 * 4 * 512))
+model.add(layers.Dense(256, activation='relu', input_dim=5 * 5* 1280))
 model.add(layers.Dropout(0.5))
 model.add(layers.Dense(1, activation='sigmoid'))
 
